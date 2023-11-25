@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Communication</title>
+</head>
+<body>
+    <h1>Arduino Communication</h1>
+    
+    <button onclick="sendCommand('LED_ON')">Turn On LED</button>
+    <button onclick="sendCommand('LED_OFF')">Turn Off LED</button>
+
+    <div id="response-container"></div>
+
+    <script>
+        function sendCommand(command) {
+            // Data to send to the server
+            const commandData = { command };
+
+            // Send an HTTP POST request to the Flask server
+            fetch('/send-command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(commandData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from the server:', data);
+
+                // Display the response on the webpage
+                const responseContainer = document.getElementById('response-container');
+                responseContainer.innerHTML = `<p>${data.message}</p>`;
+            })
+            .catch(error => {
+                console.error('Error sending command:', error);
+            });
+        }
+    </script>
+</body>
+</html>
